@@ -73,7 +73,7 @@
                 }
 
                 $scope.temContatoSelecionado = function(contatos){
-                    return !contatos.some(function(contato){
+                    return contatos.some(function(contato){
                         return contato.selecionado
                     })
                 }
@@ -84,7 +84,7 @@
         <div class="jumbotron">
             <div class='prz-main'>
                 <h3 ng-bind="app"></h3>
-                <table class="table table-striped table-bordered table-hover">
+                <table ng-show="contatos.length > 0" class="table table-striped table-bordered table-hover">
                     <tr>
                         <th></th>
                         <th class="text-center">Nome</th>
@@ -101,15 +101,16 @@
                 
                 <hr>
                 
-                <input class="form-control" type="text" name="nome" ng-model="contato.nome" placeholder="Nome">
-                <input class="form-control" type="text" name="telefone" ng-model="contato.telefone" placeholder="Telefone">
+                <input class="form-control" type="text" name="nome" ng-model="contato.nome" placeholder="Nome" ng-required="true">
+                <input class="form-control" type="text" name="telefone" ng-model="contato.telefone" placeholder="Telefone" ng-required="true">
                 <select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome group by operadora.categoria for operadora in operadoras">
                     <option value="">Selecione uma operadora</option>
                 </select>
 
                 <input class="btn btn-primary btn-block" type="button" value="Salvar" ng-click="adicionarContato(contato)" ng-disabled="!contato.nome || !contato.telefone">
-                <input class="btn btn-danger btn-block" type="button" value="Apagar" ng-click="apagarContatos(contatos)" ng-disabled="temContatoSelecionado(contatos)">
+                <input class="btn btn-danger btn-block" type="button" value="Apagar" ng-click="apagarContatos(contatos)" ng-hide="!temContatoSelecionado(contatos)">
             </div>
         </div>
+        <div ng-include="'footer.html'"></div>
     </body>
 </html>
