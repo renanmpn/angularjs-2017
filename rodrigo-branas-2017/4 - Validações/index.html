@@ -7,9 +7,6 @@
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-        <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
         <style>
             .jumbotron{
                 width: 400px;
@@ -42,8 +39,9 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
         <script src="lib/angular/angular.js"> </script>
+        <script src="lib/angular/angular-messages.js"> </script>
         <script>
-            angular.module('listaTelefonica',[]);
+            angular.module('listaTelefonica',["ngMessages"]);
             angular.module('listaTelefonica').controller('listaTelefonicaCtrl', ['$scope', function($scope){
                 $scope.app = "Lista Telefonica"
                 $scope.contatos = [
@@ -62,6 +60,7 @@
                 $scope.adicionarContato = function(contato){
                     $scope.contatos.push(angular.copy(contato))
                     delete $scope.contato
+                    $scope.contatoForm.$setPristine();
                 }
 
                 $scope.apagarContatos = function(contatos){
@@ -100,15 +99,34 @@
                 </table>
                 
                 <hr>
-                
-                <input class="form-control" type="text" name="nome" ng-model="contato.nome" placeholder="Nome" ng-required="true">
-                <input class="form-control" type="text" name="telefone" ng-model="contato.telefone" placeholder="Telefone" ng-required="true">
-                <select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome group by operadora.categoria for operadora in operadoras">
-                    <option value="">Selecione uma operadora</option>
-                </select>
-
-                <input class="btn btn-primary btn-block" type="button" value="Salvar" ng-click="adicionarContato(contato)" ng-disabled="!contato.nome || !contato.telefone">
-                <input class="btn btn-danger btn-block" type="button" value="Apagar" ng-click="apagarContatos(contatos)" ng-hide="!temContatoSelecionado(contatos)">
+                <form name="contatoForm">
+                    <input class="form-control" type="text" name="nome" ng-model="contato.nome" placeholder="Nome"
+                           ng-required="true" ng-minlength="5">
+                    <input class="form-control" type="text" name="telefone" ng-model="contato.telefone"
+                           placeholder="Telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/">
+                    <select class="form-control" ng-model="contato.operadora"
+                            ng-options="operadora.nome group by operadora.categoria for operadora in operadoras">
+                        <option value="">Selecione uma operadora</option>
+                    </select>
+                </form>
+                <input class="btn btn-primary btn-block" type="button" value="Salvar"
+                       ng-click="adicionarContato(contato)" ng-disabled="contatoForm.$invalid">
+                <input class="btn btn-danger btn-block" type="button" value="Apagar" ng-click="apagarContatos(contatos)"
+                       ng-hide="!temContatoSelecionado(contatos)">
+                <div class="alert alert-danger" ng-messages="contatoForm.nome.$error">
+                    <div ng-message="required">
+                        Nome obrigatório
+                    </div>
+                    <div ng-message="minlength">
+                        Tamanho mínimo para nome é 5
+                    </div>
+                </div>
+                <div class="alert alert-danger" ng-show="contatoForm.telefone.$error.required && contatoForm.telefone.$dirty">
+                    Telefone obrigatório
+                </div>
+                <div class="alert alert-danger" ng-show="contatoForm.telefone.$error.pattern">
+                    Telefone fora do padrão. X9999-9999
+                </div>
             </div>
         </div>
         <div ng-include="'footer.html'"></div>
