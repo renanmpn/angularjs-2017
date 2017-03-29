@@ -101,8 +101,8 @@
                 
                 <hr>
                 
-                <input class="form-control" type="text" name="nome" ng-model="contato.nome" placeholder="Nome" ng-required="true">
-                <input class="form-control" type="text" name="telefone" ng-model="contato.telefone" placeholder="Telefone" ng-required="true">
+                <input class="form-control" type="text" name="nome" ng-model="contato.nome" placeholder="Nome">
+                <input class="form-control" type="text" name="telefone" ng-model="contato.telefone" placeholder="Telefone">
                 <select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome group by operadora.categoria for operadora in operadoras">
                     <option value="">Selecione uma operadora</option>
                 </select>
